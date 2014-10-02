@@ -5,6 +5,7 @@ from django.template import RequestContext, loader
 from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.views import generic
 # Create your views here.
 
 # version 1
@@ -69,4 +70,26 @@ def vote(request, poll_id):
 # Results views first version
 def results(request, poll_id):
     poll = get_object_or_404(Poll, pk=poll_id)
-    return render(request, 'polls/results.html', {'poll': poll})
+    return render(request, 'results.html', {'poll': poll})
+
+
+# Now this is time to add some generic Views
+# I have already added urls for this and now concentrate on the Generic views
+
+class IndexView(generic.ListView):
+    template_name = 'index.html'
+    context_object_name = 'latest_poll_list'
+
+    def get_queryset(self):
+        """Return the last five published polls."""
+        return Poll.objects.order_by('-pub_date')[:5]
+
+class DetailView(generic.DetailView):
+    model = Poll
+    template_name = 'detail.html'
+
+
+class ResultsView(generic.DetailView):
+    model = Poll
+    template_name = 'results.html'
+
