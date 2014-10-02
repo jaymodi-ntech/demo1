@@ -62,6 +62,10 @@ WSGI_APPLICATION = 'demo1.wsgi.application'
 #     }
 # }
 
+TEMPLATE_DIRS = {
+        "templates/polls"
+}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
