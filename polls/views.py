@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from polls.models import *
 from django.template import RequestContext, loader
 from django.http import Http404
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 # Create your views here.
 
 # version 1
@@ -39,5 +41,32 @@ def detail(request, poll_id):
     context = {'poll': poll}
     return render(request, 'detail_1.html', context)
 
+#
+#Version 1 vote method
+
+def vote(request, poll_id):
+    p = get_object_or_404(Poll, pk=poll_id)
+    try:
+        selected_choice = p.choice_set.get(pk=request.POST['choice'])
+    except (KeyError, Choice.DoesNotExist):
+        # Redisplay the poll voting form.
+        return render(request, 'polls/detail.html', {
+            'poll': p,
+            'error_message': "You didn't select a choice.",
+        })
+    else:
+        selected_choice.votes += 1
+        selected_choice.save()
+        # Always return an HttpResponseRedirect after successfully dealing
+        # with POST data. This prevents data from being posted twice if a
+        # user hits the Back button.
+        return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
+
 # Now here i will add some more functions and then we will convert this whole
 # functions to class based and then generic views
+
+
+# Results views first version
+def results(request, poll_id):
+    poll = get_object_or_404(Poll, pk=poll_id)
+    return render(request, 'polls/results.html', {'poll': poll})

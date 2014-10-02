@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     # url(r'^$', 'demo1.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', views.index, name='index'),
+    url(r'^polls/', include('polls.urls', namespace="polls")),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^(?P<poll_id>\d+)/$', views.detail, name='detail'),
 )
